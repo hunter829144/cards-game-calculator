@@ -1,0 +1,370 @@
+/* ========================================================
+   Card Games Suite - Startup Launcher Stylesheet
+   Clean, modern, light-themed landing screen
+   ======================================================== */
+
+:root {
+  --launcher-bg: linear-gradient(135deg, #f0f7ff 0%, #fbfdfc 45%, #f2fbf6 100%);
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-border: rgba(226, 232, 240, 0.85);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --callbreak-blue: #0288d1;
+  --callbreak-blue-light: #e0f2fe;
+  --hazman-green: #16a34a;
+  --hazman-green-light: #dcfce7;
+  --shadow-card: 0 10px 28px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  --shadow-hover: 0 20px 38px -6px rgba(15, 23, 42, 0.12), 0 8px 18px -4px rgba(15, 23, 42, 0.06);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--launcher-bg);
+  min-height: 100vh;
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========================================================
+   Launcher Header
+   ======================================================== */
+.launcher-header {
+  padding: 40px 20px 24px;
+  text-align: center;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.brand-badge-icon {
+  font-size: 1.1rem;
+}
+
+.launcher-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.launcher-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ========================================================
+   Launcher Grid
+   ======================================================== */
+.launcher-main {
+  flex: 1;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+/* Game Card */
+.game-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.game-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* CallBreak Specific Accent */
+.game-card.card-callbreak {
+  border-top: 5px solid var(--callbreak-blue);
+}
+.game-card.card-callbreak:hover {
+  border-color: #0288d1;
+}
+
+/* HazMan Specific Accent */
+.game-card.card-hazman {
+  border-top: 5px solid var(--hazman-green);
+}
+.game-card.card-hazman:hover {
+  border-color: #16a34a;
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.card-callbreak .card-icon-wrapper {
+  background: var(--callbreak-blue-light);
+  color: var(--callbreak-blue);
+}
+
+.card-hazman .card-icon-wrapper {
+  background: var(--hazman-green-light);
+  color: var(--hazman-green);
+}
+
+.card-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.card-callbreak .card-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.card-hazman .card-badge {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.card-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.card-tagline {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.card-callbreak .card-tagline {
+  color: var(--callbreak-blue);
+}
+
+.card-hazman .card-tagline {
+  color: var(--hazman-green);
+}
+
+.card-desc {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+  line-height: 1.55;
+}
+
+/* Feature bullets */
+.card-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex: 1;
+}
+
+.card-features li {
+  font-size: 0.88rem;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 500;
+}
+
+.feature-bullet {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.card-callbreak .feature-bullet {
+  background: #e0f2fe;
+  color: #0288d1;
+}
+
+.card-hazman .feature-bullet {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+/* Launch Button */
+.btn-launch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.card-callbreak .btn-launch {
+  background: linear-gradient(135deg, #00b0ff 0%, #0088cc 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 136, 204, 0.3);
+}
+
+.card-callbreak .btn-launch:hover {
+  background: linear-gradient(135deg, #0091ea 0%, #0077b5 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 136, 204, 0.4);
+}
+
+.card-hazman .btn-launch {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+}
+
+.card-hazman .btn-launch:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.4);
+}
+
+/* ========================================================
+   Footer
+   ======================================================== */
+.launcher-footer {
+  text-align: center;
+  padding: 24px 20px;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+  margin-top: auto;
+}
+
+.footer-hub-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.footer-copyright {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.2px;
+}
+
+.footer-social {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.instagram-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e1306c;
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.instagram-link:hover {
+  background: #fce7f3;
+  color: #be185d;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(225, 48, 108, 0.2);
+}
+
+.instagram-icon {
+  flex-shrink: 0;
+}
+
+/* ========================================================
+   Responsive Media Queries
+   ======================================================== */
+@media (max-width: 640px) {
+  .launcher-header {
+    padding: 28px 16px 16px;
+  }
+  .launcher-title {
+    font-size: 1.8rem;
+  }
+  .launcher-main {
+    padding: 16px 16px 36px;
+  }
+  .games-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .game-card {
+    padding: 24px 20px;
+  }
+}

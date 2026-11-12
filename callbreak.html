@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0088cc" />
+  <meta name="description" content="CallBreak Calculator - Track rounds, calculate mid-scores, final scores, and ranks for 4 players." />
+  <title>CallBreak calculator</title>
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Canvas Confetti for winning celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration skipped:', err));
+      });
+    }
+  </script>
+</head>
+<body>
+  <!-- Top Header Bar -->
+  <header class="app-header">
+    <div class="header-content">
+      <h1>CallBreak calculator</h1>
+      <div class="header-actions">
+        <button id="btn-sound-toggle" class="btn-subtle" title="Sound Effects: ON">
+          <svg id="icon-sound-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          <svg id="icon-sound-off" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+          <span id="sound-label">Sound</span>
+        </button>
+        <button id="btn-edit-players" class="btn-subtle" title="Edit Player Names">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Players
+        </button>
+        <button id="btn-new-game" class="btn-subtle" title="Start New Game">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+          Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Current Round Status Banner -->
+    <div class="round-status-bar">
+      <span class="round-pill" id="current-round-pill">Round 1 of 5</span>
+      <span class="round-instruction" id="round-instruction">Enter expected points (bids) and click Fixed</span>
+    </div>
+
+    <!-- Input Control Panel -->
+    <section class="calculator-panel" aria-label="Input Points">
+      <!-- Expected Points Row -->
+      <div class="points-row">
+        <div class="row-label">
+          <span>Expected Points:</span>
+        </div>
+        <div class="row-inputs-wrapper">
+          <div class="player-input-cols" id="expected-inputs-container">
+            <div class="input-col">
+              <label for="exp-p1" class="player-col-label" id="label-exp-p1">Player1</label>
+              <input type="number" id="exp-p1" class="points-input" min="1" max="13" placeholder="0" />
+            </div>
+            <div class="input-col">
+              <label for="exp-p2" class="player-col-label" id="label-exp-p2">Player2</label>
+              <input type="number" id="exp-p2" class="points-input" min="1" max="13" placeholder="0" />
+            </div>
+            <div class="input-col">
+              <label for="exp-p3" class="player-col-label" id="label-exp-p3">Player3</label>
+              <input type="number" id="exp-p3" class="points-input" min="1" max="13" placeholder="0" />
+            </div>
+            <div class="input-col">
+              <label for="exp-p4" class="player-col-label" id="label-exp-p4">Player4</label>
+              <input type="number" id="exp-p4" class="points-input" min="1" max="13" placeholder="0" />
+            </div>
+          </div>
+          <button type="button" id="btn-fix" class="btn-fixed">Fixed</button>
+        </div>
+      </div>
+
+      <!-- Achieved Points Row -->
+      <div class="points-row">
+        <div class="row-label">
+          <span>Achieved points:</span>
+        </div>
+        <div class="row-inputs-wrapper">
+          <div class="player-input-cols" id="achieved-inputs-container">
+            <div class="input-col">
+              <label for="ach-p1" class="player-col-label" id="label-ach-p1">Player1</label>
+              <input type="number" id="ach-p1" class="points-input" min="0" max="13" placeholder="0" disabled />
+            </div>
+            <div class="input-col">
+              <label for="ach-p2" class="player-col-label" id="label-ach-p2">Player2</label>
+              <input type="number" id="ach-p2" class="points-input" min="0" max="13" placeholder="0" disabled />
+            </div>
+            <div class="input-col">
+              <label for="ach-p3" class="player-col-label" id="label-ach-p3">Player3</label>
+              <input type="number" id="ach-p3" class="points-input" min="0" max="13" placeholder="0" disabled />
+            </div>
+            <div class="input-col">
+              <label for="ach-p4" class="player-col-label" id="label-ach-p4">Player4</label>
+              <input type="number" id="ach-p4" class="points-input" min="0" max="13" placeholder="0" disabled />
+            </div>
+          </div>
+          <!-- Spacer placeholder matching button width for alignment -->
+          <div class="btn-placeholder"></div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="action-row">
+        <button type="button" id="btn-submit" class="btn-submit" disabled>Submit</button>
+      </div>
+    </section>
+
+    <!-- Score Table Section -->
+    <section class="score-section" aria-label="Score Table">
+      <div class="score-table-header">
+        <h2>Score table</h2>
+      </div>
+
+      <div class="table-card">
+        <table class="score-table" id="score-table">
+          <thead>
+            <tr>
+              <th class="th-callbreak">CallBreak</th>
+              <th id="th-p1" class="th-player">Player1</th>
+              <th id="th-p2" class="th-player">Player2</th>
+              <th id="th-p3" class="th-player">Player3</th>
+              <th id="th-p4" class="th-player">Player4</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="row-round-1" class="round-row">
+              <td class="row-title">Round1</td>
+              <td id="score-r1-p1" class="score-cell">0</td>
+              <td id="score-r1-p2" class="score-cell">0</td>
+              <td id="score-r1-p3" class="score-cell">0</td>
+              <td id="score-r1-p4" class="score-cell">0</td>
+            </tr>
+            <tr id="row-round-2" class="round-row">
+              <td class="row-title">Round2</td>
+              <td id="score-r2-p1" class="score-cell">0</td>
+              <td id="score-r2-p2" class="score-cell">0</td>
+              <td id="score-r2-p3" class="score-cell">0</td>
+              <td id="score-r2-p4" class="score-cell">0</td>
+            </tr>
+            <tr id="row-round-3" class="round-row">
+              <td class="row-title">Round3</td>
+              <td id="score-r3-p1" class="score-cell">0</td>
+              <td id="score-r3-p2" class="score-cell">0</td>
+              <td id="score-r3-p3" class="score-cell">0</td>
+              <td id="score-r3-p4" class="score-cell">0</td>
+            </tr>
+            <tr id="row-round-4" class="round-row">
+              <td class="row-title">Round4</td>
+              <td id="score-r4-p1" class="score-cell">0</td>
+              <td id="score-r4-p2" class="score-cell">0</td>
+              <td id="score-r4-p3" class="score-cell">0</td>
+              <td id="score-r4-p4" class="score-cell">0</td>
+            </tr>
+
+            <!-- Mid-score row (Calculated after Round 4) -->
+            <tr id="row-mid-score" class="special-row mid-score-row">
+              <td class="row-title highlight-title">Mid-score</td>
+              <td id="score-mid-p1" class="score-cell highlight-cell">0</td>
+              <td id="score-mid-p2" class="score-cell highlight-cell">0</td>
+              <td id="score-mid-p3" class="score-cell highlight-cell">0</td>
+              <td id="score-mid-p4" class="score-cell highlight-cell">0</td>
+            </tr>
+
+            <tr id="row-round-5" class="round-row">
+              <td class="row-title">Round5</td>
+              <td id="score-r5-p1" class="score-cell">0</td>
+              <td id="score-r5-p2" class="score-cell">0</td>
+              <td id="score-r5-p3" class="score-cell">0</td>
+              <td id="score-r5-p4" class="score-cell">0</td>
+            </tr>
+
+            <!-- Final-score row (Calculated after Round 5) -->
+            <tr id="row-final-score" class="special-row final-score-row">
+              <td class="row-title highlight-title">Final-score</td>
+              <td id="score-final-p1" class="score-cell highlight-cell">0</td>
+              <td id="score-final-p2" class="score-cell highlight-cell">0</td>
+              <td id="score-final-p3" class="score-cell highlight-cell">0</td>
+              <td id="score-final-p4" class="score-cell highlight-cell">0</td>
+            </tr>
+
+            <!-- Rank row -->
+            <tr id="row-rank" class="rank-row">
+              <td class="row-title">Rank</td>
+              <td id="rank-p1" class="rank-cell">--</td>
+              <td id="rank-p2" class="rank-cell">--</td>
+              <td id="rank-p3" class="rank-cell">--</td>
+              <td id="rank-p4" class="rank-cell">--</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Quick Rules & Info Accordion -->
+      <div class="rules-card">
+        <details>
+          <summary><strong>CallBreak Scoring Rules</strong> (Click to view)</summary>
+          <div class="rules-content">
+            <ul>
+              <li><strong>Made the Call:</strong> If Achieved tricks &ge; Expected bid, Score = <code>Bid + (Achieved - Bid) &times; 0.1</code>. (e.g., Bid 3, Won 4 &rarr; <strong>3.1</strong>).</li>
+              <li><strong>Broken Call:</strong> If Achieved tricks &lt; Expected bid, Score = <code>-Bid</code>. (e.g., Bid 4, Won 3 &rarr; <strong>-4.0</strong>).</li>
+              <li><strong>Total Tricks:</strong> 4 players share 13 tricks per round (total sum of tricks won should be 13).</li>
+              <li><strong>Mid-score:</strong> Sum of Rounds 1, 2, 3, and 4.</li>
+              <li><strong>Final-score:</strong> Sum of all 5 Rounds. Highest total score wins!</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal: Names of users (as shown in reference image 1) -->
+  <div id="modal-names" class="modal-overlay">
+    <div class="modal-box">
+      <h3 class="modal-title">Names of users</h3>
+      <form id="form-player-names" onsubmit="return false;">
+        <div class="modal-inputs-group">
+          <input type="text" id="name-input-1" class="modal-text-input" placeholder="Player1" value="Player1" required />
+          <input type="text" id="name-input-2" class="modal-text-input" placeholder="Player2" value="Player2" required />
+          <input type="text" id="name-input-3" class="modal-text-input" placeholder="Player3" value="Player3" required />
+          <input type="text" id="name-input-4" class="modal-text-input" placeholder="Player4" value="Player4" required />
+        </div>
+        <div class="modal-actions">
+          <button type="submit" id="btn-names-submit" class="btn-modal-submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Round Modal -->
+  <div id="modal-edit-round" class="modal-overlay hidden">
+    <div class="modal-box edit-round-box">
+      <h3 id="edit-round-title" class="modal-title">Edit Round</h3>
+      <p class="edit-round-subtitle">Update bids or tricks for this round</p>
+      <form id="form-edit-round" onsubmit="return false;">
+        <div class="edit-round-grid" id="edit-round-grid">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-edit-cancel" class="btn-secondary">Cancel</button>
+          <button type="submit" id="btn-edit-save" class="btn-modal-submit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Winner Modal (Celebration after Round 5) -->
+  <div id="modal-winner" class="modal-overlay hidden">
+    <div class="modal-box winner-box">
+      <div class="celebration-sunburst" aria-hidden="true"></div>
+      <div class="celebration-particles" aria-hidden="true">
+        <span class="particle p1">&#11088;</span>
+        <span class="particle p2">&#127881;</span>
+        <span class="particle p3">&#127942;</span>
+        <span class="particle p4">&#127880;</span>
+        <span class="particle p5">&#10024;</span>
+      </div>
+      <div class="trophy-wrapper">
+        <div class="trophy-icon">&#127942;</div>
+        <div class="trophy-sparkle-1">&#10024;</div>
+        <div class="trophy-sparkle-2">&#10024;</div>
+      </div>
+      <h3 class="winner-title">&#127881; Tournament Champion! &#127881;</h3>
+      <p class="winner-subtitle">5 Rounds Completed &bull; Final Standings</p>
+      <div id="winner-announcement" class="winner-announcement">
+        <!-- Dynamic winner content -->
+      </div>
+      <div class="winner-leaderboard" id="winner-leaderboard">
+        <!-- Dynamic rankings table -->
+      </div>
+      <div class="winner-audio-control">
+        <button type="button" id="btn-replay-sound" class="btn-sound-replay" title="Replay Victory Fanfare">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          Replay Victory Sound
+        </button>
+      </div>
+      <div class="winner-actions">
+        <button id="btn-close-winner" class="btn-secondary">View Scorecard</button>
+        <button id="btn-play-again" class="btn-modal-submit">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal (for resets / tricks check) -->
+  <div id="modal-confirm" class="modal-overlay hidden">
+    <div class="modal-box confirm-box">
+      <h4 id="confirm-title">Warning</h4>
+      <p id="confirm-msg">Total tricks won across 4 players is not 13. Do you wish to continue?</p>
+      <div class="confirm-actions">
+        <button id="btn-confirm-cancel" class="btn-secondary">Check Tricks</button>
+        <button id="btn-confirm-ok" class="btn-modal-submit">Submit Anyway</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p class="footer-title">CallBreak Score Calculator &bull; 5 Rounds Tournament</p>
+    <p class="footer-copyright">&copy; @hunter829104</p>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/hunter829104/" target="_blank" rel="noopener noreferrer" class="instagram-link" title="Follow @hunter829104 on Instagram">
+        <svg class="instagram-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        <span>Instagram: @hunter829104</span>
+      </a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

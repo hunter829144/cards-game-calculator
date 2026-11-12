@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0091ea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0069c0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="url(#grad)" />
+  <!-- Playing card symbols & Spade -->
+  <path d="M256 120 C230 190, 160 230, 160 280 C160 320, 200 350, 240 330 C245 350, 240 380, 220 400 L292 400 C272 380, 267 350, 272 330 C312 350, 352 320, 352 280 C352 230, 282 190, 256 120 Z" fill="#ffffff" />
+  <circle cx="256" cy="275" r="28" fill="#0091ea" />
+  <text x="256" y="285" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+</svg>
